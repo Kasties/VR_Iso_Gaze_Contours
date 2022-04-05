@@ -55,6 +55,3 @@ We use TensorflowLite to port the model to an untethered VR headset by convertin
   <img src="media/unity.gif">
 </p>
 
-Demo video: [Here](https://youtu.be/OMtYl9PkrqY).
-
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/OMtYl9PkrqY/0.jpg)](https://www.youtube.com/watch?v=OMtYl9PkrqY)
