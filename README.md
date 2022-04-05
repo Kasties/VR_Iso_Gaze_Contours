@@ -51,7 +51,7 @@ We use TensorflowLite to port the model to an untethered VR headset by convertin
 - Install TensorFlow Lite for Unity by adding git URL from the Package Maneger UI: https://github.com/asus4/tf-lite-unity-sample.git?path=/Packages/com.github.asus4.tflite
 - the folder unity_project contains a ready to be tested project which use a previously generated model 
 
+<p align="center">
+  <img src="media/unity.gif">
+</p>
 
-Demo video: [Here](https://youtu.be/OMtYl9PkrqY).
-
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/OMtYl9PkrqY/0.jpg)](https://www.youtube.com/watch?v=OMtYl9PkrqY)
