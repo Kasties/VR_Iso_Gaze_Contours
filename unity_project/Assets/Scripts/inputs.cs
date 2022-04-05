@@ -134,8 +134,8 @@ public class inputs : MonoBehaviour
 
         }
 
-        [SerializeField]
-        private Insights _insight;
+        //[SerializeField]
+        /*private Insights _insight;
         public Insights Insights
         {
             get
@@ -144,11 +144,11 @@ public class inputs : MonoBehaviour
                 return _insight;
             }
 
-        }
+        }*/
 
-        [SerializeField]
-        private RecorderObject _voiceRecorder;
-        public RecorderObject VoiceRecorder
+        //[SerializeField]
+        //private RecorderObject _voiceRecorder;
+        /*public RecorderObject VoiceRecorder
         {
             get
             {
@@ -167,7 +167,7 @@ public class inputs : MonoBehaviour
 
             }
 
-        }
+        }*/
 
         public Transform DeepChildSearch(GameObject g, string childName) {
 

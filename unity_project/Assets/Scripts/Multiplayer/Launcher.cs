@@ -20,7 +20,7 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
 
     public bool voiceDebug = true;
 
-    public AvatarBehaviourRecorder avatarRecorder;
+    //public AvatarBehaviourRecorder avatarRecorder;
 
     public RemoteAvatarsManager ram;
 
@@ -375,7 +375,7 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
         DestroyImmediate(GameObject.Find("UIHelpersModified"));
 
         //enable observer recorder
-        avatarRecorder.enabled = true;
+        //avatarRecorder.enabled = true;
 
         //create a folder for saving the data
         DataFolderCreation();

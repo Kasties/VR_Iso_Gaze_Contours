@@ -24,7 +24,7 @@ public class data_loader : MonoBehaviourPun
 
     private Queue<bool> databoolQueue;
 
-    public AvatarBehaviourRecorder avatarRecorder;
+    //public AvatarBehaviourRecorder avatarRecorder;
 
     public RemoteAvatarsManager ram;
     /*
@@ -113,16 +113,16 @@ public class data_loader : MonoBehaviourPun
 
     public void RecordEvent() {
 
-        if (recordCurrentdata) avatarRecorder.NewData(currentData.name);
+        //if (recordCurrentdata) avatarRecorder.NewData(currentData.name);
 
-        else avatarRecorder.closeWriter();
+        //else avatarRecorder.closeWriter();
 
     }
 
     public void StopRecorder()
     {
 
-        avatarRecorder.enabled=false;
+        //avatarRecorder.enabled=false;
     }
 
     public void RaiseNetworkEvent() {
