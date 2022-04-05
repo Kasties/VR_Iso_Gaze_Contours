@@ -23,6 +23,10 @@ In this step we parse the dataset so that we can have our angular velocity magni
 
 ### B) angular velocities --> distributions (deeplearning\\distributions.py)
 
+<p align="center">
+  <img src="media/comparision.gif">
+</p>
+
 Because we noticed that the gaze samples did not always have a Gaussian shape we generated PDFs with two different methods. Firstly, by using a trained autoencoder 2) that captures the shape of the distribution and secondly, by fitting a multivariate Gaussian distribution MGF 1).
 
 #### 1) Multivariate Gaussian Fitting (2DgaussianFitting.py)
