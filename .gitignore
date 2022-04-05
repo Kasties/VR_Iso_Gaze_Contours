@@ -1,5 +1,3 @@
-gibo 2.2.3 by Simon Whitaker <sw@netcetera.org>
-https://github.com/simonwhitaker/gibo
 ### https://raw.github.com/github/gitignore/baf13553d070d1d85d6c873235eb529077c35aaf/Unity.gitignore
 
 # This .gitignore file should be placed at the root of your Unity project directory
@@ -67,7 +65,5 @@ crashlytics-build.properties
 # python 
 *.pyc
 *.pkl
-*.png
-*.jpg
-**/*/[Dd]ataset9/
+**/*/[Dd]ataset*/
 
