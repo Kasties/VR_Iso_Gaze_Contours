@@ -21,7 +21,7 @@ which will allow you to run trough the following steps:
 
 In this step we parse the dataset so that we can have our angular velocity magnitude and direction to create gaze distributions based on this two parameters. 
 
-B) angular velocities --> distributions (deeplearning\\distributions.py)
+### B) angular velocities --> distributions (deeplearning\\distributions.py)
 
 Because we noticed that the gaze samples did not always have a Gaussian shape we generated PDFs with two different methods. Firstly, by using a trained autoencoder 2) that captures the shape of the distribution and secondly, by fitting a multivariate Gaussian distribution MGF 1).
 
