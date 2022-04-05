@@ -7,6 +7,10 @@ Dataset either download
 
 ## Step 2 - Generate the model 
 
+<p align="center">
+  <img src="media/pipeline.PNG">
+</p>
+
 Our model's three-stage training pipeline involves two deep learning models and a contour extraction phase to process velocity angle and magnitude (theta,rho) to generate the contour that contains the requested probability of gaze area. The contour encloses the visual interest area and includes the predicted gaze location. The first pipeline training stage consists of an autoencoder reconstructing the 2D PDF from gaze location distribution samples, or an MGF approach. The second stage is a multi-perceptron architecture that encodes contours from the angles and magnitudes of head-shift velocity.
 
 The pipeline sequence of steps is contained in : python_model/main_controller.py 
