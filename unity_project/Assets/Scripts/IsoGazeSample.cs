@@ -43,12 +43,11 @@ public class AFMVectors
         vectorsList = copy;
     }
 
-
 }
 
 public class IsoGazeSample : MonoBehaviour
 {
-    [SerializeField] string fileName = "isogaze.tflite";
+    [SerializeField, FilePopup("*.tflite")] string fileName = "isogaze.tflite";
     [SerializeField] Text outputTextView = null;
     [SerializeField] ComputeShader compute = null;
     
@@ -57,6 +56,9 @@ public class IsoGazeSample : MonoBehaviour
     Interpreter interpreter;
     
     bool isProcessing = false;
+    public Transform canvasSpace;
+    public LineRenderer CanvasLineRenderer;
+    public LineRenderer CanvasVectorLineRenderer;
     float[] inputs = new float[3];
     float[] outputs = new float[42];
     ComputeBuffer inputBuffer;
@@ -90,7 +92,7 @@ public class IsoGazeSample : MonoBehaviour
 
         inputBuffer = new ComputeBuffer(3, sizeof(float));
 
-        D = new Directions(transform);
+        D = new Directions(transform, canvasSpace);
 
         getCenterEye();
 
@@ -123,7 +125,6 @@ public class IsoGazeSample : MonoBehaviour
         inputBuffer?.Dispose();
     }
 
-
     private void AngularVelocity(out float angularvelocityangle, out float velocitymagnitude)
     {
         
@@ -141,12 +142,6 @@ public class IsoGazeSample : MonoBehaviour
         }
 
     }
-
-    //private void EulerToSpherical(Vector3 euler, out Vector2 direction ) { 
-    //    elevation = Mathf.Deg2Rad * euler.x;
-    //    heading = Mathf.Deg2Rad * euler.y;
-    //    //direction = new Vector3(Mathf.Cos(elevation) * Mathf.Sin(heading), Mathf.Sin(elevation), Mathf.Cos(elevation) * Mathf.Cos(heading));
-    //}
 
     Vector3[] InterpolateModels(Vector3[] afm, Vector3[] model, float t)
     {
@@ -200,15 +195,15 @@ public class IsoGazeSample : MonoBehaviour
 
             //Debug.Log(outputs);
             sb.Clear();
-            sb.AppendLine($"Process time: {duration: 0.00000} sec");
-            sb.AppendLine("---");
-            sb.AppendLine($"output[0]: {outputs[0]: 0.00000} sec");
-            sb.AppendLine("---");
-            sb.AppendLine($"inputs[0]: {inputs[0]: 0.00000} sec");
-            sb.AppendLine("---");
-            sb.AppendLine($"inputs[1]: {inputs[1]: 0.00000} sec");
-            sb.AppendLine("---");
-            sb.AppendLine($"inputs[2]: {inputs[2]: 0.00000} sec");
+            sb.AppendLine($"inference: {duration: 0.00000} sec");
+            //sb.AppendLine("---");
+            //sb.AppendLine($"output[0]: {outputs[0]: 0.00000} sec");
+            //sb.AppendLine("---");
+            sb.AppendLine($"θ: {inputs[0]: 0.00000} °");
+
+            sb.AppendLine($"ρ: {inputs[1]: 0.00000} °/s");
+
+            sb.AppendLine($"η: {inputs[2]: 0.00000} ");
             outputTextView.text = sb.ToString();
 
         }
@@ -222,6 +217,7 @@ public class IsoGazeSample : MonoBehaviour
         public float[] x;
         public float[] y;
     }
+    
     private XY ToXY(float[] list) {
 
         XY xy = new XY { };
@@ -261,6 +257,12 @@ public class IsoGazeSample : MonoBehaviour
             rotateValueOld = rotateValue;
         }
 
+        if (canvasSpace != null & CanvasLineRenderer != null) {
+            
+            D.mapPointsToCanvas();
+            updateLineRender(CanvasLineRenderer, CanvasVectorLineRenderer);
+          
+        }
     }
 
     void OnDrawGizmos()
@@ -277,12 +279,23 @@ public class IsoGazeSample : MonoBehaviour
 
         Gizmos.DrawRay(Vector3.zero, angVel * 3000);
 
+        //if (canvasSpace != null) 
+        //{
+        //    D.mapPointsToCanvas();
+
+        //    foreach (Vector3 point in D.CanvasPointArray)
+        //    {
+        //        Gizmos.DrawSphere(point, 0.0005f);
+        //    }
+        //}
+        //else
+        //{
         foreach (Vector3 point in D.PointsArray)
         {
-
-            Gizmos.DrawSphere(point * 10, 1f);
-
+                Gizmos.DrawSphere(point * 10, 1f);
         }
+        //}
+
 
         //Gizmos.DrawRay(transform.TransformPoint(Vector3.zero), transform.TransformPoint(Vector3.forward));
 
@@ -290,20 +303,52 @@ public class IsoGazeSample : MonoBehaviour
 
     }
 
+    public void updateLineRender(LineRenderer lr, LineRenderer lr2)
+    {
+
+        //alpha
+        lr.positionCount = D.CanvasPointArray.Length;
+        lr.SetPositions(D.CanvasPointArray);
+        lr.SetWidth(0.005f, 0.005f);
+
+        var angVeltransformed = canvasSpace.transform.TransformPoint(angVel * 300);
+
+        lr2.SetPosition(0, canvasSpace.transform.TransformPoint(Vector3.zero));
+        lr2.SetPosition(1, angVeltransformed);
+        lr2.SetWidth(0.005f, 0.005f);
+
+    }
+
     public class Directions 
     {
 
         public Transform parent;
+        public Transform canvas;
 
         public Vector3[] DirectionsArray = new Vector3[20];
         public Vector3[] PointsArray = new Vector3[20];
+        public Vector3[] CanvasPointArray = new Vector3[20];
 
+        Queue<Vector3[]> pastDirections = new Queue<Vector3[]>();
 
-        public Directions(Transform p) {
+        public Directions(Transform p, Transform c = null) {
 
             parent = p;
+            canvas = c;
         }
 
+        public void mapPointsToCanvas()
+        {
+            
+
+            for (int i = 0; i < PointsArray.Length; i++)
+            {
+                CanvasPointArray[i] = canvas.transform.TransformPoint(PointsArray[i] * 0.5f);
+            }
+
+            
+
+        }
 
         public void setOrientation(float[] x, float[] y)
         {
@@ -319,6 +364,26 @@ public class IsoGazeSample : MonoBehaviour
                 //DirectionsArray[i] = parent.TransformVector(SphericalToCartesian(200, horRads, verRads));
                 DirectionsArray[i] = SphericalToCartesian(1, horRads, verRads);
             }
+
+            //pastDirections.Enqueue(DirectionsArray);
+
+            //for (int i = 0; i < DirectionsArray.Length; i++) {
+
+            //    Vector3[] pointaverage = new Vector3[DirectionsArray.Length];
+
+            //    for (int j = 0; j < pastDirections.Count; j++) {
+
+            //        Vector3[] ar = pastDirections.ToArray<Vector3[]>()[j];
+            //        pointaverage[i] = ar[i];
+            //    }
+                
+            //    DirectionsArray[i] =  new Vector3(pointaverage.Average(x => x.x),
+            //                                    pointaverage.Average(x => x.y),
+            //                                    pointaverage.Average(x => x.z));
+            //}
+
+            //if (pastDirections.Count > 20)  pastDirections.Dequeue();
+
 
         }
 
