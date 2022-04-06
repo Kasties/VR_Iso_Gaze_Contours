@@ -962,26 +962,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 739317782}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e9708df7ad9c8f4fa1f1061c5de4bc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 4fc509cb800e2ce40b4d3a60204e9d04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: isogaze.tflite
   outputTextView: {fileID: 1051829466}
   compute: {fileID: 7200000, guid: 8214e8b7de1845b4c81623a61147d5a2, type: 3}
-  canvasSpace: {fileID: 872928212}
+  canvasSpace: {fileID: 0}
   CanvasLineRenderer: {fileID: 448494773}
   CanvasVectorLineRenderer: {fileID: 958296870}
-  jsonTextFile: {fileID: 4900000, guid: 0a464bbae52b46e4aa02c1c84bfd8cf1, type: 3}
-  tresh: 0.05
+  jsonTextFile: {fileID: 0}
+  tresh: 0
   interpolate: 1
-  rotateValue: 5
+  rotateValue: 0
   angVel: {x: 0, y: 0, z: 0}
---- !u!224 &872928212 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4558794824118894241, guid: 90ebc0bf95d1a64408beebd6fe107be0,
-    type: 3}
-  m_PrefabInstance: {fileID: 739317780}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &920520162
 GameObject:
   m_ObjectHideFlags: 0
@@ -1810,7 +1804,7 @@ PrefabInstance:
         type: 3}
       propertyPath: isogaze
       value: 
-      objectReference: {fileID: 739317783}
+      objectReference: {fileID: 0}
     - target: {fileID: 3579325436444631536, guid: 5e39f165d0f497f4d8b2c387469750ae,
         type: 3}
       propertyPath: visible
@@ -2339,7 +2333,7 @@ MonoBehaviour:
   disabled: 0
   head: {fileID: 739317781}
   jsonTextFile: {fileID: 4900000, guid: 0a464bbae52b46e4aa02c1c84bfd8cf1, type: 3}
-  isogaze: {fileID: 739317783}
+  isogaze: {fileID: 0}
   lr: {fileID: 1663940453}
   visible: 1
   otherVisible: 1
