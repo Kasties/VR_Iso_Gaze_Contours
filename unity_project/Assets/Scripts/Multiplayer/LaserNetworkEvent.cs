@@ -10,7 +10,7 @@ public class LaserNetworkEvent : MonoBehaviourPun
     public void RaiseLaserChangeEvent(object[] data)
     {
 
-        PhotonNetwork.RaiseEvent(MasterManager.GameSettings.LaserPointerChange, data, Photon.Realtime.RaiseEventOptions.Default, ExitGames.Client.Photon.SendOptions.SendReliable);
+        //PhotonNetwork.RaiseEvent(MasterManager.GameSettings.LaserPointerChange, data, Photon.Realtime.RaiseEventOptions.Default, ExitGames.Client.Photon.SendOptions.SendReliable);
 
     }
 

@@ -187,8 +187,12 @@ public class IsoGazeSample : MonoBehaviour
                 t = angVel.magnitude / tresh; //this division normalise the parameter to something between 0 and 1, closer to 0 is afm
             }
 
+            UnityEngine.Debug.Log("before afm-model interpolation");
+
             //afm-model interpolation
             D.DirectionsArray = InterpolateModels(afm.vectorsList, D.DirectionsArray, t); //0 means afm, 1 model
+
+            UnityEngine.Debug.Log("after afm-model interpolation");
         }
 
         if (outputTextView != null) { 
@@ -343,6 +347,8 @@ public class IsoGazeSample : MonoBehaviour
 
             for (int i = 0; i < PointsArray.Length; i++)
             {
+
+
                 CanvasPointArray[i] = canvas.transform.TransformPoint(PointsArray[i] * 0.5f);
             }
 
@@ -359,10 +365,15 @@ public class IsoGazeSample : MonoBehaviour
                 float horRads = Mathf.Deg2Rad * x[i];
                 float verRads = Mathf.Deg2Rad * y[i];
 
+            
+
                 PointsArray[i] = new Vector3(y[i], x[i], 0f);
+    
 
                 //DirectionsArray[i] = parent.TransformVector(SphericalToCartesian(200, horRads, verRads));
                 DirectionsArray[i] = SphericalToCartesian(1, horRads, verRads);
+        
+
             }
 
             //pastDirections.Enqueue(DirectionsArray);

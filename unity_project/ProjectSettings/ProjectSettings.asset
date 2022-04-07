@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 0
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: asus4
-  productName: tf-lite-unity-sample
+  companyName: oculus
+  productName: VR_ISO_GAZE
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -128,7 +128,9 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 0.1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 6961983149278722291, guid: 7228761cadc40ff4285ce579fc4cc0ed, type: 2}
+  - {fileID: 11400000, guid: cc329ec849e8e274188b71494897f9b4, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -146,7 +148,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.asus4.tfliteunitysample
+    Android: com.oculus.VR_ISO_GAZE
   buildNumber:
     Standalone: 0
     iPhone: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using System;
+using System.Diagnostics;
 
 public class cone : MonoBehaviourPun
 {
@@ -29,11 +30,11 @@ public class cone : MonoBehaviourPun
         //Load text from a JSON file (Assets/Resources/Text/jsonFile01.json)
         //var jsonTextFile = Resources.Load<TextAsset>("vectors_cone_20_77");
 
-        if (MasterManager.GameSettings.Observer && !simulated)
-        {
-            lr.positionCount = 0;
-            return;
-        }
+        //if (MasterManager.GameSettings.Observer && !simulated)
+        //{
+        //    lr.positionCount = 0;
+        //    return;
+        //}
 
         if (head == null && !simulated) {
 
@@ -74,15 +75,22 @@ public class cone : MonoBehaviourPun
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (MasterManager.GameSettings.Observer && !simulated)
-        {
-            return;
-        }
+        //if (MasterManager.GameSettings.Observer && !simulated)
+        //{
+        //    return;
+        //}
 
-        if (coneType == ConeType.isogaze) 
+
+
+        if (coneType == ConeType.isogaze)
+            UnityEngine.Debug.Log(isogaze.ToString());
             c.vectorsList = isogaze.D.DirectionsArray; //if isogaze update directions
 
+
+
         c.ComputeRaycast();
+
+
 
         if (r == ConeRendering.intersection)
         {
@@ -152,7 +160,7 @@ public class cone : MonoBehaviourPun
     {
         if (simulated) return; //if is a simulated cone without an avatar we do not need to send events 
 
-        PhotonNetwork.RaiseEvent(MasterManager.GameSettings.VisualConeChange, data, Photon.Realtime.RaiseEventOptions.Default, SendOptions.SendReliable);
+        //PhotonNetwork.RaiseEvent(MasterManager.GameSettings.VisualConeChange, data, Photon.Realtime.RaiseEventOptions.Default, SendOptions.SendReliable);
 
     }
 

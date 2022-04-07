@@ -979,7 +979,7 @@ MonoBehaviour:
   CanvasVectorLineRenderer: {fileID: 958296870}
   jsonTextFile: {fileID: 4900000, guid: 0a464bbae52b46e4aa02c1c84bfd8cf1, type: 3}
   tresh: 0.05
-  interpolate: 1
+  interpolate: 0
   rotateValue: 5
   angVel: {x: 0, y: 0, z: 0}
 --- !u!1 &920520162
