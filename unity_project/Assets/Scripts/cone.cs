@@ -30,6 +30,8 @@ public class cone : MonoBehaviourPun
         //Load text from a JSON file (Assets/Resources/Text/jsonFile01.json)
         //var jsonTextFile = Resources.Load<TextAsset>("vectors_cone_20_77");
 
+        //ScriptableTest.GameSettings.ToString();
+
         //if (MasterManager.GameSettings.Observer && !simulated)
         //{
         //    lr.positionCount = 0;

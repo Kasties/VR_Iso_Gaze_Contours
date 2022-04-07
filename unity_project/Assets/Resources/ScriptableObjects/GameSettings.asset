@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3afbfea086e96b43b0d0219bebe3e90, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  _gameversion: 0.0.1
-  _nickname: Satana
+  _gameversion: 0.0.2
+  _nickname: Satana2
   _userID: 0
   _roomName: CollaborationRoom
   InstantiateVrAvatarEventCode: 1
