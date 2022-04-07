@@ -127,11 +127,17 @@ public class IsoGazeSample : MonoBehaviour
 
     private void AngularVelocity(out float angularvelocityangle, out float velocitymagnitude)
     {
-        
+
+#if UNITY_ANDROID && ! UNITY_EDITOR
+        int sign = -1;
+#else
+        int sign=1;
+#endif 
+
         if (CenterEye.TryGetFeatureValue(CommonUsages.deviceAngularVelocity, out angVel))
         {
             velocitymagnitude = angVel.magnitude;
-            angVel = new Vector3(Mathf.Deg2Rad * angVel.y, Mathf.Deg2Rad * -angVel.x, 0f);
+            angVel = new Vector3(Mathf.Deg2Rad * angVel.y*sign, Mathf.Deg2Rad * -angVel.x, 0f);
             angularvelocityangle = (Vector3.Angle(Vector3.up, angVel) * Mathf.Sign(angVel.x));
         }
         else 
