@@ -45,6 +45,90 @@ public class AFMVectors
 
 }
 
+public class AFM2Dcoordinates
+{
+    public Dictionary<float, Vector2[]> coordinates = new Dictionary<float, Vector2[]>();
+
+    public Vector2[] Coordinates(float args, int rotateValue)
+    {
+
+        if (coordinates.Count == 0) {
+            coordinates = new Dictionary<float, Vector2[]> {
+                { 1f, ToXY2DVector(p1) },
+                {.9f,ToXY2DVector(p09) },
+                {.8f,ToXY2DVector(p08) },
+                {.7f,ToXY2DVector(p07) },
+                {.6f,ToXY2DVector(p06) },
+                {.5f,ToXY2DVector(p05) },
+                {.4f,ToXY2DVector(p04) },
+                {.3f,ToXY2DVector(p03) },
+                {.2f,ToXY2DVector(p02) },
+                {.1f,ToXY2DVector(p01) },
+            };}
+
+
+        return Rotate(rotateValue, coordinates[args]);
+    }
+
+    public float[] p1;
+    public float[] p09;
+    public float[] p08;
+    public float[] p07;
+    public float[] p06;
+    public float[] p05;
+    public float[] p04;
+    public float[] p03;
+    public float[] p02;
+    public float[] p01;
+
+    private bool flip = false;
+
+    public static AFM2Dcoordinates CreateFromJSON(TextAsset jsonString)
+    {
+
+        return JsonUtility.FromJson<AFM2Dcoordinates>(jsonString.ToString());
+
+    }
+
+    private Vector2[] ToXY2DVector(float[] list)
+    {
+
+        Vector2[] xy = new Vector2[21];
+
+        for (int i = 0; i < list.Length ; i++) //not the last
+        {
+            int index = Mathf.FloorToInt(i / 2);
+            if (i % 2 != 0)
+                xy[index][1] = list[i]*-1;
+            else
+                xy[index][0] = list[i];
+        }
+
+        if (flip)
+        {
+            Array.Reverse(xy);
+        }
+
+        return xy;
+    }
+
+    public Vector2[] Rotate(int rotateValue, Vector2[] vectorsList)
+    {
+
+
+        int n = vectorsList.Length;
+        Vector2[] copy = new Vector2[n];
+
+        for (int i = 0; i < n; ++i)
+        {
+            copy[(i + n - rotateValue) % n] = vectorsList[i];
+        }
+
+        return copy;
+    }
+
+}
+
 public class IsoGazeSample : MonoBehaviour
 {
     [SerializeField, FilePopup("*.tflite")] string fileName = "isogaze.tflite";
@@ -65,10 +149,19 @@ public class IsoGazeSample : MonoBehaviour
 
     //afm
     public TextAsset jsonTextFile;
+    public TextAsset jsonTextFileAfm2D;
     private AFMVectors afm;
+    private AFM2Dcoordinates afm2D;
     [SerializeField] float tresh; // when the threshold is reached t0 for afm = 0 , 1-t0 for the model is 1
 
     public bool interpolate = true;
+    public interpolateMode interpolationMode = interpolateMode.interpolation2D;
+
+    public enum interpolateMode
+    {
+        interpolation3D = 0,
+        interpolation2D = 1
+    }
 
     [SerializeField] int rotateValue=0;
     private int rotateValueOld=0;
@@ -98,8 +191,9 @@ public class IsoGazeSample : MonoBehaviour
 
         inputs[2] = 0.7f;
 
-
         afm = AFMVectors.CreateFromJSON(jsonTextFile);
+        afm2D = AFM2Dcoordinates.CreateFromJSON(jsonTextFileAfm2D);
+
     }
 
     List<InputDevice> Devices;
@@ -161,65 +255,79 @@ public class IsoGazeSample : MonoBehaviour
         return res;
     }
 
+    Vector2[] InterpolateModels2D(Vector2[] afm, Vector2[] model, float t)
+    {
+        Vector2[] res = new Vector2[model.Length];
+        for (int i = 0; i < model.Length; i++)
+        {
+            //t==0 afm              t==1 model
+            res[i] = (1 - t) * afm[i] + t * model[i];
+        }
+
+        return res;
+    }
+
     void Invoke()
     {
         isProcessing = true;
 
         AngularVelocity(out inputs[0],out inputs[1]);
 
-        //manual input
-        //inputs[0] = -180f; //angle
-        //inputs[1] = 8.0f; //speed d/s
-        //inputs[2] = 0.7f; //percentile
-
-
-        //pure model output
         float startTime = Time.realtimeSinceStartup;
         interpreter.SetInputTensorData(0, inputs);
         interpreter.Invoke();
         interpreter.GetOutputTensorData(0, outputs);
-        
         float duration = Time.realtimeSinceStartup - startTime;
-        
-        XY angles = ToXY(outputs);
 
-        D.setOrientation(angles.x, angles.y);
+        if (interpolate && interpolationMode == interpolateMode.interpolation2D)
+        {
 
-        if (interpolate) {
+            Vector2[] outputsvector2D = ToXY2DVector(outputs);
 
-            float t = 1;
-            if (angVel.magnitude <= tresh) // if v >=threshold then t = 1 , model will be used otherwise interpolation with afm
-            {
-                t = angVel.magnitude / tresh; //this division normalise the parameter to something between 0 and 1, closer to 0 is afm
-            }
+            Vector2[] afm2Dextracted = afm2D.Coordinates(inputs[2], rotateValue);
 
-            UnityEngine.Debug.Log("before afm-model interpolation");
+            //afm-model interpolation with 2D cone afm
+            outputsvector2D = InterpolateModels2D(afm2Dextracted, outputsvector2D, treshold()); //0 means afm, 1 model
 
-            //afm-model interpolation
-            D.DirectionsArray = InterpolateModels(afm.vectorsList, D.DirectionsArray, t); //0 means afm, 1 model
+            var outputscopy = Vectors2ToArray(outputsvector2D);
 
-            UnityEngine.Debug.Log("after afm-model interpolation");
+            XY angles = ToXY(outputscopy);
+
+            D.setOrientation(angles.x, angles.y);
+        }
+        else if (interpolate && interpolationMode == interpolateMode.interpolation3D)
+        {
+
+            XY angles = ToXY(outputs);
+
+            D.setOrientation(angles.x, angles.y);
+
+            //afm-model interpolation with 3D cone afm 
+            D.DirectionsArray = InterpolateModels(afm.vectorsList, D.DirectionsArray, treshold()); //0 means afm, 1 model
+
+        }
+        else {
+
+            XY angles = ToXY(outputs);
+
+            D.setOrientation(angles.x, angles.y);
+
         }
 
-        if (outputTextView != null) { 
+        if (outputTextView != null)  ConsolePrint( duration,  inputs);
 
-            //Debug.Log(outputs);
+        isProcessing = false;
+    }
+
+    private void ConsolePrint(float duration,float[] inputs) {
+
             sb.Clear();
             sb.AppendLine($"inference: {duration: 0.00000} sec");
-            //sb.AppendLine("---");
-            //sb.AppendLine($"output[0]: {outputs[0]: 0.00000} sec");
-            //sb.AppendLine("---");
             sb.AppendLine($"θ: {inputs[0]: 0.00000} °");
-
             sb.AppendLine($"ρ: {inputs[1]: 0.00000} °/s");
-
             sb.AppendLine($"η: {inputs[2]: 0.00000} ");
             outputTextView.text = sb.ToString();
 
-        }
-
-        
-        isProcessing = false;
     }
 
     struct XY
@@ -227,7 +335,49 @@ public class IsoGazeSample : MonoBehaviour
         public float[] x;
         public float[] y;
     }
-    
+
+    private float treshold() {
+
+        float t = 1;
+
+        if (angVel.magnitude <= tresh) // if v >=threshold then t = 1 , model will be used otherwise interpolation with afm
+        {
+            t = angVel.magnitude / tresh; //this division normalise the parameter to something between 0 and 1, closer to 0 is afm
+        }
+
+        return t;
+    }
+
+    private float[] Vectors2ToArray(Vector2[] vectors) 
+    {
+        List<float> a = new List<float>();
+
+        for (int i = 0; i < vectors.Length ; i++) //not the last
+        {
+            a.Add(vectors[i][0]);
+            a.Add(vectors[i][1]);
+        }
+
+        return a.ToArray<float>();
+    }
+
+    private Vector2[] ToXY2DVector(float[] list)
+    {
+
+        Vector2[] xy = new Vector2[21];
+       
+        for (int i = 0; i < list.Length - 2; i++) //not the last
+        {
+            int index = Mathf.FloorToInt(i / 2);
+            if (i % 2 != 0)
+                xy[index][1] = list[i];
+            else
+                xy[index][0] = list[i];
+        }
+
+        return xy;
+    }
+
     private XY ToXY(float[] list) {
 
         XY xy = new XY { };
