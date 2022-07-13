@@ -55,21 +55,36 @@ We use TensorflowLite to port the model to an untethered VR headset by convertin
   <img src="media/unity.gif">
 </p>
 
+
 @inproceedings{10.1145/3517031.3529642,
+
 author = {Bovo, Riccardo and Giunchi, Daniele and Sidenmark, Ludwig and Gellersen, Hans and Costanza, Enrico and Heinis, Thomas},
+
 title = {Real-Time Head-Based Deep-Learning Model for Gaze Probability Regions in Collaborative VR},
+
 year = {2022},
+
 isbn = {9781450392525},
+
 publisher = {Association for Computing Machinery},
+
 address = {New York, NY, USA},
+
 url = {https://doi.org/10.1145/3517031.3529642},
+
 doi = {10.1145/3517031.3529642},
-abstract = {Eye behavior has gained much interest in the VR research community as an interactive input and support for collaboration. Researchers used head behavior and saliency to implement gaze inference models when eye-tracking is missing. However, these solutions are resource-demanding and thus unfit for untethered devices, and their angle accuracy is around 7°, which can be a problem in high-density informative areas. To address this issue, we propose a lightweight deep learning model that generates the probability density function of the gaze as a percentile contour. This solution allows us to introduce a visual attention representation based on a region rather than a point. In this way, we manage the trade-off between the ambiguity of a region and the error of a point. We tested our model in untethered devices with real-time performances; we evaluated its accuracy, outperforming our identified baselines (average fixation map and head direction).},
+
 booktitle = {2022 Symposium on Eye Tracking Research and Applications},
+
 articleno = {6},
+
 numpages = {8},
+
 keywords = {neural networks, visual attention, gaze inference, gaze prediction},
+
 location = {Seattle, WA, USA},
+
 series = {ETRA '22}
+
 }
 
