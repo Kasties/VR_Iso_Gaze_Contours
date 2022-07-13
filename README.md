@@ -56,8 +56,7 @@ We use TensorflowLite to port the model to an untethered VR headset by convertin
 </p>
 
 
-@inproceedings{10.1145/3517031.3529642,
-
+@inproceedings{10.1145/3517031.3529642,<br>
 author = {Bovo, Riccardo and Giunchi, Daniele and Sidenmark, Ludwig and Gellersen, Hans and Costanza, Enrico and Heinis, Thomas},
 
 title = {Real-Time Head-Based Deep-Learning Model for Gaze Probability Regions in Collaborative VR},
