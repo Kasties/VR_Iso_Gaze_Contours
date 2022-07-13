@@ -57,33 +57,19 @@ We use TensorflowLite to port the model to an untethered VR headset by convertin
 
 
 @inproceedings{10.1145/3517031.3529642,<br>
-author = {Bovo, Riccardo and Giunchi, Daniele and Sidenmark, Ludwig and Gellersen, Hans and Costanza, Enrico and Heinis, Thomas},
-
-title = {Real-Time Head-Based Deep-Learning Model for Gaze Probability Regions in Collaborative VR},
-
-year = {2022},
-
-isbn = {9781450392525},
-
-publisher = {Association for Computing Machinery},
-
-address = {New York, NY, USA},
-
-url = {https://doi.org/10.1145/3517031.3529642},
-
-doi = {10.1145/3517031.3529642},
-
-booktitle = {2022 Symposium on Eye Tracking Research and Applications},
-
-articleno = {6},
-
-numpages = {8},
-
-keywords = {neural networks, visual attention, gaze inference, gaze prediction},
-
-location = {Seattle, WA, USA},
-
-series = {ETRA '22}
-
+    author = {Bovo, Riccardo and Giunchi, Daniele and Sidenmark, Ludwig and Gellersen, Hans and Costanza, Enrico and Heinis, Thomas},<br>
+    title = {Real-Time Head-Based Deep-Learning Model for Gaze Probability Regions in Collaborative VR}, <br>
+    year = {2022}, <br>
+    isbn = {9781450392525},<br>
+    publisher = {Association for Computing Machinery},<br>
+    address = {New York, NY, USA},<br>
+    url = {https://doi.org/10.1145/3517031.3529642},<br>
+    doi = {10.1145/3517031.3529642},<br>
+    booktitle = {2022 Symposium on Eye Tracking Research and Applications},<br>
+    articleno = {6},<br>
+    numpages = {8},<br>
+    keywords = {neural networks, visual attention, gaze inference, gaze prediction},<br>
+    location = {Seattle, WA, USA},<br>
+    series = {ETRA '22}<br>
 }
 
