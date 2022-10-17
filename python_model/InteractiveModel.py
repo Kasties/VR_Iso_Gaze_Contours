@@ -59,7 +59,7 @@ def displayConditions(df,conditions):
         # VelocityAngleRange = Slider(axampVelocityAngleRange, 'VelocityAngleRange', 0.0, 180, valinit=45)
 
         axampVelocityMagnitude= plt.axes([0.2, 0.06, 0.65, 0.02], facecolor=axcolor)
-        VelocityMagnitude = Slider(axampVelocityMagnitude, 'Magnitude', 0.0, 10, valinit=7)
+        VelocityMagnitude = Slider(axampVelocityMagnitude, 'Magnitude', 0.0, 7, valinit=7)
 
         axampPercentile= plt.axes([0.2, 0.11, 0.65, 0.02], facecolor=axcolor)
         ContourPercentile = Slider(axampPercentile, 'Percentile', 0.0, 1, valinit=0.7)
@@ -91,8 +91,7 @@ def displayConditions(df,conditions):
             for contour in gaussian_contour:
                 axe.plot(contour[:,0],contour[:,1],c='green')
         #msex,msey,hmsex,hmsey = evaluate(center,x,y )
-
-        axe.quiver(0,0, math.sin(math.radians(VelocityAngle.val))*VelocityMagnitude.val, math.cos(math.radians(VelocityAngle.val))*VelocityMagnitude.val)
+        axe.quiver(0,0, math.sin(math.radians(VelocityAngle.val))*VelocityMagnitude.val, math.cos(math.radians(VelocityAngle.val))*VelocityMagnitude.val,angles='xy', scale_units='xy', scale=1)
         #axe.set_title("MSE X,Y:"+str(msex)[:5]+"  "+str(msey)[:5]+" Head MSE X,Y:"+str(hmsex)[:5]+"  "+str(hmsey)[:5])
         #axe.scatter(x,y,s=.1,zorder=2)
         plt.subplots_adjust(bottom=0.25)

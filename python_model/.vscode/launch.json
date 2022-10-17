@@ -20,6 +20,33 @@
             "console": "integratedTerminal",
             "args": ["--path", "C:\\Users\\Riccardo\\Documents\\GitHub\\ETRA2022 gaze distribution model\\python_model\\dataset9","--GazeHeadFile", "360_VR_gaze.pkl"],
             "justMyCode": true
+        }, 
+        {
+            "name": "Python: keras to tflite",
+            "type": "python",
+            "request": "launch",
+            "program": "deeplearning/keras2tflite.py",
+            "console": "integratedTerminal",
+            "args": ["--modelpath", "C:\\Users\\Riccardo\\Documents\\GitHub\\ETRA2022 gaze distribution model\\python_model\\dataset9"],
+            "justMyCode": true
+        }, 
+        {
+            "name": "Python:countours",
+            "type": "python",
+            "request": "launch",
+            "program": "contours.py",
+            "console": "integratedTerminal",
+            "args": ["--path", "C:\\Users\\Riccardo\\Documents\\GitHub\\ETRA2022 gaze distribution model\\python_model\\dataset9","--GazeHeadFile","C:\\Users\\Riccardo\\Documents\\GitHub\\ETRA2022 gaze distribution model\\python_model\\dataset9\\360_VR_gaze.pkl"],
+            "justMyCode": true
+        },
+        {
+            "name": "Python:countour_encoder.py",
+            "type": "python",
+            "request": "launch",
+            "program": "deeplearning/countour_encoder.py",
+            "console": "integratedTerminal",
+            "args": ["--path", "C:\\Users\\Riccardo\\Documents\\GitHub\\ETRA2022 gaze distribution model\\python_model\\dataset9"],
+            "justMyCode": true
         }
     ]
 }

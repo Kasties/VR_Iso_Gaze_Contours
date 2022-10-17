@@ -305,9 +305,11 @@ def main(args):
     
     GazeandHeadVel = pd.read_pickle(pkl_data_path)
     GazeandHeadVel = GazeandHeadVel[GazeandHeadVel["usage"]==0]
-
+    
+        #'angles',
     columns = [
-        'angles',
+        'sin',
+        'cos',
         'anglesRange',
         'magnitude',
         'magnitudeRangesmin',
@@ -335,8 +337,12 @@ def main(args):
 
             if len(contourPredicted)!=21:
                 continue
+            
+            #'angles': [dfin['angles'][index]],
 
-            d = {'angles': [dfin['angles'][index]],
+            d = {
+            'sin':[math.sin(math.radians(dfin['angles'][index]))],
+            'cos':[math.cos(math.radians(dfin['angles'][index]))],
             'anglesRange': [dfin['anglesRange'][index]],
             'samplesCount': [int(dfin['samplesCount'][index])],
             'magnitude': [dfin['magnitude'][index]],

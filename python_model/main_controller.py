@@ -117,7 +117,7 @@ command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datase
 
 python_script= "deeplearning\\countour_encoder.py"
 command = "python {0} --path {1}".format(python_script,datasetpath)
-#os.system(command)
+os.system(command)
 
 
 ##############################################
@@ -131,4 +131,4 @@ command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datase
 
 python_script= "deeplearning\\keras2tflite.py"
 command = "python {0} --modelpath {1} ".format(python_script,datasetpath)
-os.system(command)
+#os.system(command)

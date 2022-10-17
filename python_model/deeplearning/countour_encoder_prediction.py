@@ -534,7 +534,11 @@ def predict(angle,magnitude,percentile,contour_model):
 
   if url not in cache:
 
-    features = np.expand_dims(np.array([angle,magnitude,percentile]),axis=0)
+    sin =math.sin(math.radians(angle))
+    cos =math.cos(math.radians(angle))
+
+
+    features = np.expand_dims(np.array([sin,cos,magnitude,percentile]),axis=0)
 
     prediction = contour_model.predict(features)
 
