@@ -560,5 +560,5 @@ if __name__ == "__main__":
     parser.add_argument("--GazeHeadFile", type=str, required=False)
     parser.add_argument("--evaluate", type=str, required=False)
     args = parser.parse_args()
-    main(args)
-    #roundtest(args)
+    #main(args)
+    roundtest(args)

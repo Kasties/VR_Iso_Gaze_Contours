@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }, 
+        {
+            "name": "Python: countour_encoder_prediction",
+            "type": "python",
+            "request": "launch",
+            "program": "deeplearning/countour_encoder_prediction.py",
+            "console": "integratedTerminal",
+            "args": ["--path", "C:\\Users\\Riccardo\\Documents\\GitHub\\ETRA2022 gaze distribution model\\python_model\\dataset9","--GazeHeadFile", "360_VR_gaze.pkl"],
+            "justMyCode": true
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 import os
-from folders import folder_arff, folder_code, folder_txt
+from folders import folder_arff, folder_code
 import shutil
 
 ######################################
