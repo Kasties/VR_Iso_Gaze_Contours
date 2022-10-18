@@ -143,9 +143,15 @@ public class IsoGazeSample : MonoBehaviour
     public Transform canvasSpace;
     public LineRenderer CanvasLineRenderer;
     public LineRenderer CanvasVectorLineRenderer;
-    float[] inputs = new float[3];
-    float[] outputs = new float[42];
+    float[] inputs = new float[4];
+    float[] outputs = new float[42]; 
+    float[] outcenter = new float[2]; 
+    float anglevelocityangle;
     ComputeBuffer inputBuffer;
+
+    public GameObject cam;
+    public GameObject HeadCursor;
+    public GameObject ModelCursor;
 
     //afm
     public TextAsset jsonTextFile;
@@ -180,16 +186,16 @@ public class IsoGazeSample : MonoBehaviour
             useNNAPI = true,
         };
         interpreter = new Interpreter(TensorFlowLite.FileUtil.LoadFile(fileName), options);
-        interpreter.ResizeInputTensor(0, new int[] { 1, 3 });
+        interpreter.ResizeInputTensor(0, new int[] { 1, 4 });
         interpreter.AllocateTensors();
 
-        inputBuffer = new ComputeBuffer(3, sizeof(float));
+        inputBuffer = new ComputeBuffer(4, sizeof(float));
 
         D = new Directions(transform, canvasSpace);
 
         getCenterEye();
 
-        inputs[2] = 0.7f;
+        inputs[3] = 0.7f;
 
         afm = AFMVectors.CreateFromJSON(jsonTextFile);
         afm2D = AFM2Dcoordinates.CreateFromJSON(jsonTextFileAfm2D);
@@ -219,7 +225,7 @@ public class IsoGazeSample : MonoBehaviour
         inputBuffer?.Dispose();
     }
 
-    private void AngularVelocity(out float angularvelocityangle, out float velocitymagnitude)
+    private void AngularVelocity(out float angularvelocityangle, out float angularvelocityangleSin, out float angularvelocityangleCos,  out float velocitymagnitude)
     {
 
 #if UNITY_ANDROID && ! UNITY_EDITOR
@@ -228,17 +234,37 @@ public class IsoGazeSample : MonoBehaviour
         int sign=1;
 #endif 
 
+        
+
         if (CenterEye.TryGetFeatureValue(CommonUsages.deviceAngularVelocity, out angVel))
         {
-            velocitymagnitude = angVel.magnitude;
+            velocitymagnitude = angVel.magnitude / Time.deltaTime ;
+            velocitymagnitude = velocitymagnitude > 10f ? 10f : velocitymagnitude ; //cap speed to not exceed the data we worked with 
+            velocitymagnitude = velocitymagnitude < 6f ? (float)Math.Sinh( Convert.ToDouble(0.001923f * Math.Pow(velocitymagnitude,4)) ) : velocitymagnitude; //we create a hiperbolic sin function to phase in the effect ogf the cursor https://www.desmos.com/calculator \sinh\left(0.001923\cdot x^{4}\right)
+
             angVel = new Vector3(Mathf.Deg2Rad * angVel.y*sign, Mathf.Deg2Rad * -angVel.x*sign, 0f);
+            
             angularvelocityangle = (Vector3.Angle(Vector3.up, angVel) * Mathf.Sign(angVel.x));
+            angularvelocityangleSin = Mathf.Sin(Mathf.Deg2Rad * angularvelocityangle); //transform angle in sin 
+            angularvelocityangleCos = Mathf.Cos(Mathf.Deg2Rad * angularvelocityangle); //transform angle in cos
+
+            if (velocitymagnitude < 2f) {
+
+                angularvelocityangle =  0f;
+                angularvelocityangleSin = Mathf.Sin(Mathf.Deg2Rad * angularvelocityangle); //transform angle in sin 
+                angularvelocityangleCos = Mathf.Cos(Mathf.Deg2Rad * angularvelocityangle); //transform angle in cos
+            }
+
+            //Debug.Log(string.Format("Angle '{0}' has sin '{1}' and cos '{2}'", angularvelocityangle.ToString(), angularvelocityangleSin.ToString(), angularvelocityangleCos.ToString()));
+
         }
         else 
         {
             angVel = Vector3.zero;
             angularvelocityangle = 0f;
             velocitymagnitude = 0f;
+            angularvelocityangleSin = 0f;
+            angularvelocityangleCos = 0f;
         }
 
     }
@@ -271,12 +297,13 @@ public class IsoGazeSample : MonoBehaviour
     {
         isProcessing = true;
 
-        AngularVelocity(out inputs[0],out inputs[1]);
+        AngularVelocity(out anglevelocityangle, out inputs[0],out inputs[1], out inputs[2]);
 
         float startTime = Time.realtimeSinceStartup;
         interpreter.SetInputTensorData(0, inputs);
         interpreter.Invoke();
         interpreter.GetOutputTensorData(0, outputs);
+        interpreter.GetOutputTensorData(1, outcenter);
         float duration = Time.realtimeSinceStartup - startTime;
 
         if (interpolate && interpolationMode == interpolateMode.interpolation2D)
@@ -284,7 +311,7 @@ public class IsoGazeSample : MonoBehaviour
 
             Vector2[] outputsvector2D = ToXY2DVector(outputs);
 
-            Vector2[] afm2Dextracted = afm2D.Coordinates(inputs[2], rotateValue);
+            Vector2[] afm2Dextracted = afm2D.Coordinates(inputs[3], rotateValue);
 
             //afm-model interpolation with 2D cone afm
             outputsvector2D = InterpolateModels2D(afm2Dextracted, outputsvector2D, treshold()); //0 means afm, 1 model
@@ -319,13 +346,43 @@ public class IsoGazeSample : MonoBehaviour
         isProcessing = false;
     }
 
+    void ShowCursor()
+    {
+        //Ludwig Code
+
+        Vector3 direction = cam.transform.forward;
+
+        direction = Quaternion.AngleAxis(-outcenter[1], cam.transform.right) * direction;
+        direction = Quaternion.AngleAxis(outcenter[0], cam.transform.up) * direction;
+
+        Ray ray = new Ray(cam.transform.position, direction);
+       
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 100))
+        {
+            ModelCursor.transform.position = hit.point;
+        }
+
+        ray = new Ray(cam.transform.position, cam.transform.forward);
+
+        if (Physics.Raycast(ray, out hit, 100))
+        {
+            HeadCursor.transform.position = hit.point;
+        }
+
+
+    }
+
     private void ConsolePrint(float duration,float[] inputs) {
 
             sb.Clear();
             sb.AppendLine($"inference: {duration: 0.00000} sec");
-            sb.AppendLine($"θ: {inputs[0]: 0.00000} °");
-            sb.AppendLine($"ρ: {inputs[1]: 0.00000} °/s");
-            sb.AppendLine($"η: {inputs[2]: 0.00000} ");
+            sb.AppendLine($"θ: {anglevelocityangle: 0.00000} °");
+            sb.AppendLine($"sin θ: {inputs[0]: 0.00000} °");
+            sb.AppendLine($"cos θ: {inputs[1]: 0.00000} °");
+            sb.AppendLine($"ρ: {inputs[2]: 0.00000} °/s");
+            sb.AppendLine($"η: {inputs[3]: 0.00000} ");
             outputTextView.text = sb.ToString();
 
     }
@@ -400,15 +457,17 @@ public class IsoGazeSample : MonoBehaviour
     {
         Invoke();
 
+        ShowCursor();
+
         if (Input.GetKeyDown("n"))
         {
-            if (inputs[2] <= 1) inputs[2] += 0.1f;
-            else inputs[2] = 1f;
+            if (inputs[3] <= 1) inputs[3] += 0.1f;
+            else inputs[3] = 1f;
         }
         else if (Input.GetKeyDown("m"))
         {
-            if (inputs[2] > 0.1f) inputs[2] -= 0.1f;
-            else inputs[2] = 0.1f;
+            if (inputs[3] > 0.1f) inputs[3] -= 0.1f;
+            else inputs[3] = 0.1f;
         }
 
         if (rotateValue != rotateValueOld) {
@@ -565,6 +624,8 @@ public class IsoGazeSample : MonoBehaviour
 
             return outCart;
         }
+
+
 
 
     }
