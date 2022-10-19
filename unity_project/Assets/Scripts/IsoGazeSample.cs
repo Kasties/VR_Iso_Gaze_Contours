@@ -145,13 +145,19 @@ public class IsoGazeSample : MonoBehaviour
     public LineRenderer CanvasVectorLineRenderer;
     float[] inputs = new float[4];
     float[] outputs = new float[42]; 
-    float[] outcenter = new float[2]; 
+    float[] outcenter = new float[2];
+
+
+    public bool accumulation = false;
+    Queue<float> velocitymagnitudes= new Queue<float>(); 
+    Queue<float> velocityangles = new Queue<float>();
     float anglevelocityangle;
     ComputeBuffer inputBuffer;
 
     public GameObject cam;
     public GameObject HeadCursor;
     public GameObject ModelCursor;
+    public GameObject SelectionCursor;
 
     //afm
     public TextAsset jsonTextFile;
@@ -238,25 +244,55 @@ public class IsoGazeSample : MonoBehaviour
 
         if (CenterEye.TryGetFeatureValue(CommonUsages.deviceAngularVelocity, out angVel))
         {
+
             velocitymagnitude = angVel.magnitude / Time.deltaTime ;
-            velocitymagnitude = velocitymagnitude > 10f ? 10f : velocitymagnitude ; //cap speed to not exceed the data we worked with 
-            velocitymagnitude = velocitymagnitude < 6f ? (float)Math.Sinh( Convert.ToDouble(0.001923f * Math.Pow(velocitymagnitude,4)) ) : velocitymagnitude; //we create a hiperbolic sin function to phase in the effect ogf the cursor https://www.desmos.com/calculator \sinh\left(0.001923\cdot x^{4}\right)
+
+            //cap speed to not exceed the data we worked with 
+            float velocityCap = 10f;
+            velocitymagnitude = velocitymagnitude > velocityCap ? velocityCap : velocitymagnitude ;
+
+            //phase in the effect of the headvelocity and remove jittering at low speed 
+            //we create a hiperbolic sin function to phase in the effect of the cursor https://www.desmos.com/calculator \sinh\left(0.001923\cdot x^{4}\right)
+            velocitymagnitude = velocitymagnitude < 6f ? (float)Math.Sinh( Convert.ToDouble(0.001923f * Math.Pow(velocitymagnitude,4)) ) : velocitymagnitude;
 
             angVel = new Vector3(Mathf.Deg2Rad * angVel.y*sign, Mathf.Deg2Rad * -angVel.x*sign, 0f);
-            
-            angularvelocityangle = (Vector3.Angle(Vector3.up, angVel) * Mathf.Sign(angVel.x));
-            angularvelocityangleSin = Mathf.Sin(Mathf.Deg2Rad * angularvelocityangle); //transform angle in sin 
-            angularvelocityangleCos = Mathf.Cos(Mathf.Deg2Rad * angularvelocityangle); //transform angle in cos
 
-            if (velocitymagnitude < 2f) {
 
-                angularvelocityangle =  0f;
+            //remove jittering at low speed 
+            if (velocitymagnitude < 2f)
+            {
+                angularvelocityangle = accumulation ? velocityangles.ToArray().Average(): 0f;
+                angularvelocityangleSin = Mathf.Sin(Mathf.Deg2Rad * angularvelocityangle); //transform angle in sin for the model input 
+                angularvelocityangleCos = Mathf.Cos(Mathf.Deg2Rad * angularvelocityangle); //transform angle in cos for the model input 
+            }
+            else {
+
+                angularvelocityangle = (Vector3.Angle(Vector3.up, angVel) * Mathf.Sign(angVel.x));
                 angularvelocityangleSin = Mathf.Sin(Mathf.Deg2Rad * angularvelocityangle); //transform angle in sin 
                 angularvelocityangleCos = Mathf.Cos(Mathf.Deg2Rad * angularvelocityangle); //transform angle in cos
+
             }
 
-            //Debug.Log(string.Format("Angle '{0}' has sin '{1}' and cos '{2}'", angularvelocityangle.ToString(), angularvelocityangleSin.ToString(), angularvelocityangleCos.ToString()));
 
+            // accumulating the head velocity for a full sec 1f 
+            if (accumulation)
+            {
+
+                float accumulationsamplevelocitymagnitude = (int)(0.5f / Time.deltaTime);
+                float accumulationsamplevelocityangle = (int)(0.5f / Time.deltaTime);
+            
+                if (velocitymagnitudes.Count > accumulationsamplevelocitymagnitude) velocitymagnitudes.Dequeue();
+                if (velocityangles.Count > accumulationsamplevelocityangle) velocityangles.Dequeue();
+
+                velocitymagnitudes.Enqueue(velocitymagnitude);
+                velocityangles.Enqueue(angularvelocityangle);
+
+                if (velocitymagnitudes.Count > 0)  velocitymagnitude = velocitymagnitudes.ToArray().Average();
+
+            }
+
+
+            
         }
         else 
         {
@@ -371,6 +407,7 @@ public class IsoGazeSample : MonoBehaviour
             HeadCursor.transform.position = hit.point;
         }
 
+     
 
     }
 
