@@ -52,7 +52,7 @@ We use TensorflowLite to port the model to an untethered VR headset by convertin
 - the folder unity_project contains a ready to be tested project which use a previously generated model 
 
 <p align="center">
-  <img src="media/unity.gif">
+  <img src="media/model_unity.gif">
 </p>
 
 
