@@ -62,8 +62,8 @@ def main(args):
     path = args.rootpath
 
     #read test data
-    test_data_path = os.path.join(path, 'datasetreal\\distributions') 
-    prediction_data_path = os.path.join(path, 'datasetreal\\predictions') 
+    test_data_path = os.path.join(path, 'datasetreal/distributions') 
+    prediction_data_path = os.path.join(path, 'datasetreal/predictions') 
     Path(prediction_data_path).mkdir(parents=True, exist_ok=True)
     test_files =[ i for i in  sorted(os.listdir(test_data_path)) if 'csv' not in i]
 

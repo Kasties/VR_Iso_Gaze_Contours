@@ -22,7 +22,7 @@ def main(args):
   path = args.path
   outjsonpath = os.path.join(path,"countour_model.json")
   checkpoint_filepath = os.path.join(path,"checkpointSupervised")
-  picklefile = os.path.join(path,"datasetreal/predictions/parameters.pkl")
+  picklefile = os.path.join(path,"datasetreal_from_dl/predictions/parameters.pkl")
 
   #load data
   contour_train = pd.read_pickle(picklefile)

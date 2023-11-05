@@ -50,33 +50,29 @@ shutil.copy(src,dest)
 ##############################################
 ##############################################
 # 2 create real data distributions 
-# this create the distribution images in outputdataset\\distribution 
-# this also fit a 2D gaussian distribution in outputdataset\\gaussian 
+# this create the distribution images in outputdataset/distribution 
+# this also fit a 2D gaussian distribution in outputdataset/gaussian 
 
 python_script= "FixedArff.py"
 realdataset = os.path.join(datasetpath,"datasetreal")
 command = "python {0} --file {1} --outputpath {2} --resolution {3}".format(python_script, arff_headVelocityandgaze_file,realdataset,params['dim'][0])
-os.system(command)
-quit()
+#os.system(command)
 ##############################################
 ##############################################
 # 3 Train autoencoder and predict distributions 
 
 # 1st create distributions 
-python_script= "deeplearning\\distributions.py"
+python_script= "deeplearning/distributions.py"
 command = "python {0} --path {1} --resolution {2}".format(python_script,datasetpath,params['dim'][0])
-os.system(command)
-
+#os.system(command)
 # 2nd train autoencoder #TODO add conf parameters
-python_script= "deeplearning\\autoencoder_training.py"
+python_script= "deeplearning/autoencoder_training.py"
 command = "python {0} --rootpath {1} --resolution {2} --imageChannels {3}".format(python_script,datasetpath,params['dim'][0],imageChannels)
-os.system(command)
-
+#os.system(command)
 # 3rd predict distributions from the real data scarce distributions 
-python_script= "deeplearning\\autoencoder_prediction.py"
+python_script= "deeplearning/autoencoder_prediction.py"
 command = "python {0} --rootpath {1} --resolution {2} --imageChannels {3}".format(python_script,datasetpath,params['dim'][0],imageChannels)
-os.system(command)
-
+#os.system(command)
 #3rd bis # TODO replace with afm autogeneration 
 src = os.path.join(folder_code, 'afm')
 dest = os.path.join(realdataset, 'afm')
@@ -88,8 +84,7 @@ except:
 # 4th evaluate distributions comapring it to gaussian 
 python_script= "compareDistributions.py"
 command = "python {0} --path {1}".format(python_script,realdataset)
-os.system(command)
-
+#os.system(command)
 
 ##############################################
 ##############################################
@@ -97,8 +92,7 @@ os.system(command)
 
 python_script= "contours.py"
 command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datasetpath,arff_headVelocityandgaze_file)
-os.system(command)
-
+#os.system(command)
 
 # python_script= "generate_evaluation_distributions.py"
 # realdataset = os.path.join(datasetpath,"datasetreal")
@@ -117,7 +111,7 @@ os.system(command)
 python_script= "deeplearning/countour_encoder.py"
 command = "python {0} --path {1}".format(python_script,datasetpath)
 os.system(command)
-
+quit()
 
 ##############################################
 ##############################################

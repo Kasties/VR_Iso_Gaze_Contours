@@ -62,12 +62,13 @@ def angleContour( c):
         angles.append(Angle2D(xc,yc))
 
     for angle in keepangles:
-        index,number = find_nearest(angle,angles)
-        #print(str(angle)+" "+str(number))
-        returnarray.append(contour[index])
-        x2, y2 = contour[index]
-        #plt.plot(x1, y1, x2, y2, marker = 'o')
-        #plt.axline((x1, y1), (x2, y2))
+        if len(angles) > 0:
+            index,number = find_nearest(angle,angles)
+            #print(str(angle)+" "+str(number))
+            returnarray.append(contour[index])
+            x2, y2 = contour[index]
+            #plt.plot(x1, y1, x2, y2, marker = 'o')
+            #plt.axline((x1, y1), (x2, y2))
 
     return returnarray
 
@@ -97,8 +98,9 @@ def unit_vector(vector):
 
 def find_nearest(value, array):
     array = np.asarray(array)
-    idx = (np.abs(array - value)).argmin()
-    return idx, array[idx]
+    if len(array) > 0:
+        idx = (np.abs(array - value)).argmin()
+        return idx, array[idx]
 
 def extract(imgpath,percentage, plot):
 
@@ -120,9 +122,11 @@ def extract(imgpath,percentage, plot):
     p = cs.allsegs
     contour = angleContour( p)
     contour = np.array(contour)
-
-    axs.plot(contour[:,0], contour[:,1])
-
+    try:
+        axs.plot(contour[:,0], contour[:,1])
+    except:
+        print("there was an error")
+        pass
     if(plot):
         plt.show()
     else:
