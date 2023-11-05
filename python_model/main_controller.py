@@ -115,7 +115,7 @@ command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datase
 ##############################################
 # 5 training contours encoder
 
-python_script= "deeplearning\\countour_encoder.py"
+python_script= "deeplearning/countour_encoder.py"
 command = "python {0} --path {1}".format(python_script,datasetpath)
 os.system(command)
 
@@ -124,11 +124,11 @@ os.system(command)
 ##############################################
 # 6 evaluate contours encoder
 
-python_script= "deeplearning\\countour_encoder_prediction.py"
+python_script= "deeplearning/countour_encoder_prediction.py"
 command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datasetpath,filename)
 #os.system(command)
 
 
-python_script= "deeplearning\\keras2tflite.py"
+python_script= "deeplearning/keras2tflite.py"
 command = "python {0} --modelpath {1} ".format(python_script,datasetpath)
 #os.system(command)
