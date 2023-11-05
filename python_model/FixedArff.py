@@ -116,6 +116,7 @@ def determineCondition(df,angle,range,tresh, numeropercentilimagnitudine):
         return determineCondition(df,angle,range+0.1,tresh, numeropercentilimagnitudine)
 
 def file_path(string):
+    print(string)
     if os.path.isfile(string):
         return string
     else:
@@ -124,7 +125,8 @@ def file_path(string):
 def dir_path_create(string):
     
     fullpath = os.path.abspath(string)
-
+    print(fullpath)
+    #NOTE I did a hack datsetreal_from_dl is what I dl I have no idea what the original idea was since there are no comments or documention and the paper says noting
     if os.path.isdir(fullpath):
         print(fullpath)
         raise Exception("directory already existing either delete directory manually or change output directory")
@@ -185,10 +187,10 @@ def main(args):
             imgpaths.append(imgname)
 
             rgb = generateheatmapFromDistributionrgba(x,y,None, resolution, min = -50,max= 50, isGray =True)
-            cv2.imwrite(distributionpath+"\\"+imgname, rgb)
+            cv2.imwrite(distributionpath+"/"+imgname, rgb)
 
             rgbgauss = fitting2Dgaussian(x,y,None, resolution, min = -50,max= 50, isGray =True)     
-            cv2.imwrite(gaussianpath+"\\"+imgname, rgbgauss)
+            cv2.imwrite(gaussianpath+"/"+imgname, rgbgauss)
 
             imagenumber+=1
         
@@ -197,7 +199,7 @@ def main(args):
         data= data.append(dataAngle, ignore_index=True)
         print(data.shape)
 
-    data.to_csv(distributionpath+"\\parameters.csv")
+    data.to_csv(distributionpath+"/parameters.csv")
 
 def saveafm(args):
 

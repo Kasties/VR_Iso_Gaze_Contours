@@ -36,7 +36,7 @@ python_script= "generateParameters.py"
 filename = "360_VR_gaze.pkl"
 arff_headVelocityandgaze_file =  os.path.join(datasetpath,filename)
 command = "python {0} --path {1} --type arff --output {2}".format(python_script,folder_arff,arff_headVelocityandgaze_file)
-os.system(command)
+#os.system(command)
 
 #todo add pure data and s-gaze
 #1 bis, copy confirgurations
@@ -57,7 +57,7 @@ python_script= "FixedArff.py"
 realdataset = os.path.join(datasetpath,"datasetreal")
 command = "python {0} --file {1} --outputpath {2} --resolution {3}".format(python_script, arff_headVelocityandgaze_file,realdataset,params['dim'][0])
 os.system(command)
-
+quit()
 ##############################################
 ##############################################
 # 3 Train autoencoder and predict distributions 
