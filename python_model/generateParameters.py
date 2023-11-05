@@ -57,9 +57,8 @@ def LoadData(file):
     print(data.shape)
 
 def LoadDataFromArff(file):
-    
-    user = int(file.split('\\')[-1].split("_")[0])
-    task = int(file.split('\\')[-1].split("_")[1])
+    user = int(file.split('/')[-1].split("_")[0])
+    task = int(file.split('/')[-1].split("_")[1])
     #usage = 0 if int(user)<=10 else 1
     usage = 0 if np.random.uniform()<0.7 else 1
     
@@ -212,11 +211,12 @@ def unit_vector(vector):
 
 def main(args):
     global data
-
+    print(args)
+    print("tes")
     pathname = args.path + "/**/*." + args.type
     pathoutput = args.output
     files = glob.glob(pathname, recursive=True)
-
+    print(files)
     for c, f in enumerate(files[:]):
         LoadData(f)
 
@@ -232,6 +232,7 @@ def main(args):
     data.to_pickle(pathoutput, compression='infer', protocol=5)#, storage_options=None)
 
 def dir_path(string):
+    print(string)
     if os.path.isdir(string):
         return string
     else:
@@ -254,6 +255,8 @@ if __name__ == "__main__":
     parser.add_argument("--path", type=dir_path, required=True)
     parser.add_argument("--type", type=str, required=True)
     parser.add_argument("--output", type=dir_path_create, required=True)
+    print(parser)
+    print("test")
     args = parser.parse_args()
     main(args)
 

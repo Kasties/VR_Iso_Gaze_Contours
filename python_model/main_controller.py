@@ -36,8 +36,7 @@ python_script= "generateParameters.py"
 filename = "360_VR_gaze.pkl"
 arff_headVelocityandgaze_file =  os.path.join(datasetpath,filename)
 command = "python {0} --path {1} --type arff --output {2}".format(python_script,folder_arff,arff_headVelocityandgaze_file)
-#os.system(command)
-
+os.system(command)
 
 #todo add pure data and s-gaze
 #1 bis, copy confirgurations
@@ -57,7 +56,7 @@ shutil.copy(src,dest)
 python_script= "FixedArff.py"
 realdataset = os.path.join(datasetpath,"datasetreal")
 command = "python {0} --file {1} --outputpath {2} --resolution {3}".format(python_script, arff_headVelocityandgaze_file,realdataset,params['dim'][0])
-#os.system(command)
+os.system(command)
 
 ##############################################
 ##############################################
@@ -66,17 +65,17 @@ command = "python {0} --file {1} --outputpath {2} --resolution {3}".format(pytho
 # 1st create distributions 
 python_script= "deeplearning\\distributions.py"
 command = "python {0} --path {1} --resolution {2}".format(python_script,datasetpath,params['dim'][0])
-#os.system(command)
+os.system(command)
 
 # 2nd train autoencoder #TODO add conf parameters
 python_script= "deeplearning\\autoencoder_training.py"
 command = "python {0} --rootpath {1} --resolution {2} --imageChannels {3}".format(python_script,datasetpath,params['dim'][0],imageChannels)
-#os.system(command)
+os.system(command)
 
 # 3rd predict distributions from the real data scarce distributions 
 python_script= "deeplearning\\autoencoder_prediction.py"
 command = "python {0} --rootpath {1} --resolution {2} --imageChannels {3}".format(python_script,datasetpath,params['dim'][0],imageChannels)
-#os.system(command)
+os.system(command)
 
 #3rd bis # TODO replace with afm autogeneration 
 src = os.path.join(folder_code, 'afm')
@@ -89,7 +88,7 @@ except:
 # 4th evaluate distributions comapring it to gaussian 
 python_script= "compareDistributions.py"
 command = "python {0} --path {1}".format(python_script,realdataset)
-#os.system(command)
+os.system(command)
 
 
 ##############################################
@@ -98,7 +97,7 @@ command = "python {0} --path {1}".format(python_script,realdataset)
 
 python_script= "contours.py"
 command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datasetpath,arff_headVelocityandgaze_file)
-#os.system(command)
+os.system(command)
 
 
 # python_script= "generate_evaluation_distributions.py"
@@ -126,7 +125,7 @@ os.system(command)
 
 python_script= "deeplearning/countour_encoder_prediction.py"
 command = "python {0} --path {1} --GazeHeadFile {2}".format(python_script,datasetpath,filename)
-#os.system(command)
+os.system(command)
 
 
 python_script= "deeplearning/keras2tflite.py"
